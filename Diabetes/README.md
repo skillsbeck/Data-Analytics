@@ -15,10 +15,9 @@ This project aims to analyze the Diabetes dataset to uncover trends and insights
 2. Exploratory Data Analysis (EDA):
    - Summary statistics
    - Visualizations
-3. Modeling:
-   - Description of any models used (if applicable)
-4. Results:
-   - Key findings and insights
+3. Results:
+   - Higher glucose levels are strongly associated with positive diabetes diagnosis.
+   - Younger patients are less likely to have diabetes, while the prevalence increases with age.
 
 ## Visualizations
 - ![Visualization 1](visualizations/plot1.png)
