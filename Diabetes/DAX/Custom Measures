@@ -1,0 +1,78 @@
+Total Pregnancies = SUM('cleaned_diabetes'[Pregnancies])
+
+Average Glucose = AVERAGE('cleaned_diabetes'[Glucose])
+
+BMI Classification = 
+SWITCH(
+    TRUE(),
+    'cleaned_diabetes'[BMI] < 18.5, "Underweight",
+    'cleaned_diabetes'[BMI] >= 18.5 && 'cleaned_diabetes'[BMI] < 24.9, "Normal weight",
+    'cleaned_diabetes'[BMI] >= 25 && 'cleaned_diabetes'[BMI] < 29.9, "Overweight",
+    'cleaned_diabetes'[BMI] >= 30, "Obese"
+)
+
+Insulin Resistance = 
+AVERAGEX(
+    FILTER(
+        'cleaned_diabetes',
+        'cleaned_diabetes'[Insulin] > 0
+    ),
+    'cleaned_diabetes'[Insulin]
+)
+
+Age Group = 
+SWITCH(
+    TRUE(),
+    'cleaned_diabetes'[Age] <= 20, "0-20",
+    'cleaned_diabetes'[Age] > 20 && 'cleaned_diabetes'[Age] <= 30, "21-30",
+    'cleaned_diabetes'[Age] > 30 && 'cleaned_diabetes'[Age] <= 40, "31-40",
+    'cleaned_diabetes'[Age] > 40 && 'cleaned_diabetes'[Age] <= 50, "41-50",
+    'cleaned_diabetes'[Age] > 50 && 'cleaned_diabetes'[Age] <= 60, "51-60",
+    'cleaned_diabetes'[Age] > 60, "60+"
+)
+
+High Blood Pressure Count = 
+COUNTROWS(
+    FILTER(
+        'cleaned_diabetes',
+        'cleaned_diabetes'[BloodPressure] >= 140
+    )
+)
+
+Diabetes Outcome Percentage = 
+DIVIDE(
+    CALCULATE(
+        COUNT('cleaned_diabetes'[Outcome]),
+        'cleaned_diabetes'[Outcome] = 1
+    ),
+    COUNT('cleaned_diabetes'[Outcome]),
+    0
+)
+
+Average Diabetes Pedigree by Age Group = 
+AVERAGEX(
+    SUMMARIZE(
+        'cleaned_diabetes',
+        'cleaned_diabetes'[Age Group],
+        "AveragePedigree", AVERAGE('cleaned_diabetes'[DiabetesPedigreeFunction])
+    ),
+    [AveragePedigree]
+)
+
+Median Skin Thickness = 
+MEDIAN('cleaned_diabetes'[SkinThickness])
+
+
+Correlation Glucose Insulin = 
+VAR MeanGlucose = AVERAGE('cleaned_diabetes'[Glucose])
+VAR MeanInsulin = AVERAGE('cleaned_diabetes'[Insulin])
+VAR Covariance = 
+    SUMX(
+        'cleaned_diabetes',
+        ('cleaned_diabetes'[Glucose] - MeanGlucose) * ('cleaned_diabetes'[Insulin] - MeanInsulin)
+    ) / (COUNT('cleaned_diabetes'[Glucose]) - 1)
+VAR StdDevGlucose = STDEV.P('cleaned_diabetes'[Glucose])
+VAR StdDevInsulin = STDEV.P('cleaned_diabetes'[Insulin])
+RETURN
+DIVIDE(Covariance, StdDevGlucose * StdDevInsulin, 0)
+
