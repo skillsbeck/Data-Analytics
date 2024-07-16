@@ -49,3 +49,22 @@ JOIN
     Encounters e
 ON
     p.id = e.patient;
+
+--rank each patients claim by total cost, from highest to lowest cost
+SELECT
+    p.id,
+    p.first,
+    p.last,
+    e.start,
+    e.stop,
+    e.total_claim_cost,
+	e.encounterclass,
+	e.description,
+    RANK() OVER (PARTITION BY p.id ORDER BY e.total_claim_cost DESC) AS encounter_rank
+FROM
+    Patients p
+JOIN
+    Encounters e
+ON
+    p.id = e.patient;
+
