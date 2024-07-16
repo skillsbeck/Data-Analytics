@@ -14,3 +14,38 @@ GROUP BY
     p.id,
     p.first,
     p.last;
+
+
+--top 10 patients by total claims cost
+SELECT
+    p.id,
+    p.first,
+    p.last,
+    e.start,
+    e.stop,
+    e.total_claim_cost
+FROM
+    Patients p
+JOIN
+    Encounters e
+ON
+    p.id = e.patient
+ORDER BY
+    e.total_claim_cost DESC
+LIMIT 10;
+
+--cumulative cost of encounters per patient; shows a running total of total claim cost sorted by patient and descending date
+SELECT
+    p.id,
+    p.first,
+    p.last,
+    e.start,
+    e.stop,
+    e.total_claim_cost,
+    SUM(e.total_claim_cost) OVER (PARTITION BY p.id ORDER BY e.start) AS cumulative_encounter_cost
+FROM
+    Patients p
+JOIN
+    Encounters e
+ON
+    p.id = e.patient;
