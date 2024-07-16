@@ -1,0 +1,35 @@
+--join patients table to encounters table to get all encounters for each patient
+SELECT
+    patient.id,
+    patient.first,
+    patient.last,
+    e.start,
+    e.stop,
+    e.reasoncode,
+    e.total_claim_cost
+FROM
+    Patients patient
+JOIN
+    Encounters e
+ON
+    patient.id = e.patient;
+
+--Join patients, encounters, and conditions to get details of patients with specific conditions
+SELECT
+    p.id,
+    p.first,
+    p.last,
+    c.description AS condition_description,
+    e.start,
+    e.stop,
+    e.total_claim_cost
+FROM
+    Patients p
+JOIN
+    Conditions c
+ON
+    p.id = c.patient
+JOIN
+    Encounters e
+ON
+    c.patient = e.patient;
