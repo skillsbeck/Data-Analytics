@@ -33,3 +33,25 @@ JOIN
     Encounters e
 ON
     c.patient = e.patient;
+
+
+--Join patients, encounters, and immunizations to get immunization details per encounter
+
+SELECT
+    p.id,
+    p.first,
+    p.last,
+    e.start,
+    e.stop,
+    i.description AS immunization_description,
+    i.date
+FROM
+    Patients p
+JOIN
+    Encounters e
+ON
+    p.id = e.patient
+JOIN
+    Immunizations i
+ON
+    e.patient = i.patient;
