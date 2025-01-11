@@ -4,7 +4,7 @@ Welcome to my portfolio showcasing my expertise in data analytics and visualizat
 
 ## Projects
 
-- Diabetes(./project-1)
+- Diabetes (./project-1)
   Brief description of Project 1.
 - [Project 2 Title](./project-2)
   Brief description of Project 2.
