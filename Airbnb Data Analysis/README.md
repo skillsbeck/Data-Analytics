@@ -1,7 +1,7 @@
 # Airbnb Data Analysis
 
 ## Project Overview
-Briefly describe the project's purpose and objectives.
+Perform analysis on Airbnb open source data to transform into usable dataset. 
 
 ## Data
 - Describe the dataset used (source, size, features, etc.).
