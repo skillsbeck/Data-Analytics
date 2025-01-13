@@ -1,0 +1,50 @@
+-- 1. Basic Churn Rate Calculation
+SELECT 
+    COUNT(CASE WHEN churn = 'Yes' THEN customer_id ELSE NULL END) AS churned_customers,
+    COUNT(customer_id) AS total_customers,
+    ROUND((COUNT(CASE WHEN churn = 'Yes' THEN customer_id ELSE NULL END) * 100.0) / COUNT(customer_id), 2) AS churn_rate
+FROM customer_churn_dataset;
+
+-- 2. Average Monthly Charges for Churned vs. Retained Customers
+SELECT 
+    churn,
+    AVG(monthly_charges) AS avg_monthly_charges,
+    AVG(tenure) AS avg_tenure,
+    COUNT(customer_id) AS customer_count
+FROM 
+    customer_churn_dataset
+GROUP BY 
+    churn;
+
+-- 3. Correlation Analysis (Monthly Charges vs Churn)
+SELECT 
+    CASE 
+        WHEN monthly_charges < 50 THEN 'Low'
+        WHEN monthly_charges BETWEEN 50 AND 100 THEN 'Medium'
+        ELSE 'High'
+    END AS charge_category,
+    COUNT(CASE WHEN churn = 'Yes' THEN customer_id ELSE NULL END) AS churned_customers,
+    COUNT(customer_id) AS total_customers,
+    ROUND((COUNT(CASE WHEN churn = 'Yes' THEN customer_id ELSE NULL END) * 100.0) / COUNT(customer_id), 2) AS churn_rate
+FROM 
+    customer_churn_dataset
+GROUP BY 
+    charge_category;
+
+-- 4. Churn by Contract Type
+SELECT 
+    contract_type,
+    COUNT(CASE WHEN churn = 'Yes' THEN customer_id ELSE NULL END) AS churned_customers,
+    COUNT(customer_id) AS total_customers,
+    ROUND((COUNT(CASE WHEN churn = 'Yes' THEN customer_id ELSE NULL END) * 100.0) / COUNT(customer_id), 2) AS churn_rate
+FROM 
+    customer_churn_dataset
+GROUP BY 
+    contract_type;
+
+-- 5. Revenue Loss Estimation Due to Churn
+SELECT 
+    SUM(CASE WHEN churn = 'Yes' THEN monthly_charges ELSE 0 END) AS lost_monthly_revenue,
+    SUM(CASE WHEN churn = 'No' THEN monthly_charges ELSE 0 END) AS retained_monthly_revenue
+FROM 
+    customer_churn_dataset;
