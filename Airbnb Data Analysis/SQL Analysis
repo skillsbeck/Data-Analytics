@@ -1,0 +1,65 @@
+-- 1. Analyze Average Price and Review Score by Neighborhood
+SELECT 
+    neighborhood,
+    AVG(price) AS avg_price,
+    AVG(review_score) AS avg_review_score,
+    COUNT(listing_id) AS total_listings
+FROM 
+    airbnb_data
+GROUP BY 
+    neighborhood
+HAVING 
+    COUNT(listing_id) > 50
+ORDER BY 
+    avg_price DESC;
+
+-- 2. Calculate Price Distribution Quartiles and Outliers
+SELECT 
+    neighborhood,
+    PERCENTILE_CONT(0.25) WITHIN GROUP (ORDER BY price) AS Q1,
+    PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY price) AS Median,
+    PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY price) AS Q3,
+    MAX(price) AS MaxPrice
+FROM 
+    airbnb_data
+GROUP BY 
+    neighborhood;
+
+-- 3. Identify Highly Rated Listings (Review Score > 90th Percentile)
+SELECT 
+    listing_id,
+    neighborhood,
+    price,
+    review_score
+FROM 
+    airbnb_data
+WHERE 
+    review_score > (
+        SELECT PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY review_score) 
+        FROM airbnb_data
+    )
+ORDER BY review_score DESC;
+
+-- 4. Revenue Estimation by Neighborhood (Price * Availability)
+SELECT 
+    neighborhood,
+    SUM(price * availability_365) AS estimated_revenue
+FROM 
+    airbnb_data
+GROUP BY 
+    neighborhood
+ORDER BY 
+    estimated_revenue DESC;
+
+-- 5. Host Analysis (Top Hosts by Listings and Revenue)
+SELECT 
+    host_id,
+    COUNT(listing_id) AS total_listings,
+    SUM(price * availability_365) AS total_revenue
+FROM 
+    airbnb_data
+GROUP BY 
+    host_id
+ORDER BY 
+    total_revenue DESC
+LIMIT 10;
